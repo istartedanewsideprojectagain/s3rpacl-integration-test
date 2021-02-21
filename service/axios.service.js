@@ -20,14 +20,12 @@ const AxiosService = {
     },
 
 
-    /**
-     * Sends a GET request with a json body to the API.
-     * @param {String} path A relative path to the resource.
-     * @param {*} withAuth True if the auth header should be set.
-     */
-    async get(path, jwt) {
+    async get(path, jwt, additionalHeaders={}) {
         return this.axios.get(path, {
-            headers: this.authorizationHeader(jwt),
+            headers: {
+                ...this.authorizationHeader(jwt),
+                ...additionalHeaders
+            }
         });
     },
 
@@ -40,6 +38,15 @@ const AxiosService = {
     async post(path, body = {}, jwt) {
         return this.axios.post(path, body, {
             headers: this.authorizationHeader(jwt),
+        });
+    },
+
+    async postFile(path, body = {}, jwt,extraHeaders){
+        return this.axios.post(path, body, {
+            headers: {
+                Authorization: 'Bearer ' + jwt,
+                'content-type': extraHeaders['content-type']
+            },
         });
     },
 
